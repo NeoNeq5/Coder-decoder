@@ -14,12 +14,12 @@ int main() {
 }
 
 void scanTab(int tab[]) {
-    char tab[21];
+    char tab1[21];
     int tab2[20];
-    scanf("%20s",tab);
+    scanf("%20s",tab1);
     int i =0;
-    while(tab[i] != '\0') {
-        tab2[i] = tab[i] - '0';
+    while(tab1[i] != '\0') {
+        tab2[i] = tab1[i] - '0';
         i++;
     }
     printf("%d \n",i);
@@ -53,22 +53,25 @@ void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divi
     }
     for(int i=0;i<dividendLength - divisorLength;i++) {
         if(reminder[i] != -1) {
-            int coef = gf_divide(reminder[i], divisor[0]);
-            quotient[i] = coef;
+            int quotTemp = gf_divide(reminder[i], divisor[0]);
+            quotient[i] = quotTemp;
 
             for(int j=1;j<divisorLength;j++) {
                 if(divisor[j] != -1) {
-                    int product = gf_multiply(coef, divisor[j]);
+                    int product = gf_multiply(quotTemp, divisor[j]);
                     reminder[i+j] = gf_add(reminder[i+j], product);
                 }
             }
         }
     }
+    for(int i=0;i<dividendLength;i++) {
+        printf("%d\n",reminder[i]);
+    }
 }
 
 int gf_multiply(int a, int b) {
     if(a == -1 || b == -1) return -1;
-    return (a * b) % 31;
+    return (a * b) % 32;
 }
 int gf_add(int a, int b) {
     if(a == -1) return b;
@@ -81,5 +84,5 @@ int gf_divide(int a, int b) {
         printf("dzielenie przez 0");
         return -1;
     }
-    return (a - b + 31) % 31;
+    return (a - b + 32) % 32;
 }
