@@ -6,7 +6,8 @@ void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divi
 int gf_multiply(int coef, int dividend);
 int gf_divide(int coef, int dividend);
 int gf_add(int coef, int dividend);
-
+int to_primitive_element(int *binary);
+void to_binary(int *binary, int alpha);
 
 int main() {
     int tabEx[11] = {-1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30};
@@ -41,7 +42,7 @@ void codeTab(int tab[]) {
             tabToCode[i] = -1;
         }
     }
-    dividePolynomials(tabToCode, 31, tabPolynomial, 21, reminder, quotinet);
+    dividePolynomials(tabToCode, 31, tabPolynomial, 20, reminder, quotinet);
 }
 
 void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divisorLength, int *reminder, int *quotient) {
@@ -53,36 +54,158 @@ void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divi
     }
     for(int i=0;i<dividendLength - divisorLength;i++) {
         if(reminder[i] != -1) {
+            //printf("%d. ", i);
             int quotTemp = gf_divide(reminder[i], divisor[0]);
             quotient[i] = quotTemp;
 
-            for(int j=1;j<divisorLength;j++) {
+            for(int j=0;j<divisorLength;j++) {
                 if(divisor[j] != -1) {
                     int product = gf_multiply(quotTemp, divisor[j]);
+                    //printf("%d + %d = ", reminder[i+j], product);
                     reminder[i+j] = gf_add(reminder[i+j], product);
+                    //printf("%d, ", reminder[i+j]);
                 }
             }
         }
+        //printf("\n");
     }
     for(int i=0;i<dividendLength;i++) {
-        printf("%d\n",reminder[i]);
+        printf("%d, ",reminder[i]);
+    }
+    printf("\n");
+    for(int i = 0; i < 11; i++){
+        reminder[i] = dividend[i];
+    }
+    for(int i=0;i<dividendLength;i++) {
+        printf("%d, ",reminder[i]);
     }
 }
 
 int gf_multiply(int a, int b) {
     if(a == -1 || b == -1) return -1;
-    return (a * b) % 32;
+    //return (a * b) % 32;
+    return (a + b) % 31;
 }
+
 int gf_add(int a, int b) {
-    if(a == -1) return b;
+    /*if(a == -1) return b;
     if(b == -1) return a;
-    return a ^ b;
+    return a ^ b;*/
+    int tabA[5];
+    to_binary(tabA, a);
+    int tabB[5];
+    to_binary(tabB, b);
+    int tabSum[5];
+    for(int i = 0; i < 5; i++){
+        tabSum[i] = tabA[i]^tabB[i];
+    }
+    return to_primitive_element(tabSum);
 }
+
 int gf_divide(int a, int b) {
     if(a == -1 ) return -1;
     if(b == -1) {
         printf("dzielenie przez 0");
         return -1;
     }
-    return (a - b + 32) % 32;
+    //return (a - b + 32) % 32;
+    return (a - b + 31) % 31;
+}
+
+int to_primitive_element(int *binary){
+    int tabOfAlphas[32][6] = 
+    {{0,0,0,0,0,-1},
+    {0,0,0,0,1,0},
+    {0,0,0,1,0,1},
+    {0,0,0,1,1,18},
+    {0,0,1,0,0,2},
+    {0,0,1,0,1,5},
+    {0,0,1,1,0,19},
+    {0,0,1,1,1,11},
+    {0,1,0,0,0,3},
+    {0,1,0,0,1,29},
+    {0,1,0,1,0,6},
+    {0,1,0,1,1,27},
+    {0,1,1,0,0,20},
+    {0,1,1,0,1,8},
+    {0,1,1,1,0,12},
+    {0,1,1,1,1,23},
+    {1,0,0,0,0,4},
+    {1,0,0,0,1,10},
+    {1,0,0,1,0,30},
+    {1,0,0,1,1,17},
+    {1,0,1,0,0,7},
+    {1,0,1,0,1,22},
+    {1,0,1,1,0,28},
+    {1,0,1,1,1,26},
+    {1,1,0,0,0,21},
+    {1,1,0,0,1,25},
+    {1,1,0,1,0,9},
+    {1,1,0,1,1,16},
+    {1,1,1,0,0,13},
+    {1,1,1,0,1,14},
+    {1,1,1,1,0,24},
+    {1,1,1,1,1,15}};
+    int tester = 0;
+    int alpha;
+    for(int i = 0; i < 32; i++){
+        for(int j = 0; j < 5; j++){
+            if(tabOfAlphas[i][j] != binary[j]){
+                tester = 0;
+                break;
+            }
+            else{
+                tester++;
+            }
+        }
+        if(tester == 5){
+            alpha = i;
+            break;
+        }
+    }
+    return tabOfAlphas[alpha][5];
+}
+
+void to_binary(int *binary, int alpha){
+    int tabOfAlphas[32][6] = 
+    {{0,0,0,0,0,-1},
+    {0,0,0,0,1,0},
+    {0,0,0,1,0,1},
+    {0,0,0,1,1,18},
+    {0,0,1,0,0,2},
+    {0,0,1,0,1,5},
+    {0,0,1,1,0,19},
+    {0,0,1,1,1,11},
+    {0,1,0,0,0,3},
+    {0,1,0,0,1,29},
+    {0,1,0,1,0,6},
+    {0,1,0,1,1,27},
+    {0,1,1,0,0,20},
+    {0,1,1,0,1,8},
+    {0,1,1,1,0,12},
+    {0,1,1,1,1,23},
+    {1,0,0,0,0,4},
+    {1,0,0,0,1,10},
+    {1,0,0,1,0,30},
+    {1,0,0,1,1,17},
+    {1,0,1,0,0,7},
+    {1,0,1,0,1,22},
+    {1,0,1,1,0,28},
+    {1,0,1,1,1,26},
+    {1,1,0,0,0,21},
+    {1,1,0,0,1,25},
+    {1,1,0,1,0,9},
+    {1,1,0,1,1,16},
+    {1,1,1,0,0,13},
+    {1,1,1,0,1,14},
+    {1,1,1,1,0,24},
+    {1,1,1,1,1,15}};
+    for(int i = 0; i < 32; i++){
+        if(tabOfAlphas[i][5] == alpha){
+            for(int j = 0; j < 5; j++){
+                binary[j] = tabOfAlphas[i][j];
+            }
+            break;
+        }
+    }
 }
