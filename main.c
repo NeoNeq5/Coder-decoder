@@ -53,6 +53,8 @@ void codeTab(int tab[]) {
         }
     }
     dividePolynomials(tabToCode, 31, tabPolynomial, 21, reminder, quotinet);
+    dividePolynomials(reminder, 31, tabPolynomial, 21, reminder, quotinet);
+
 }
 
 void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divisorLength, int *reminder, int *quotient) {
@@ -83,11 +85,18 @@ void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divi
     for(int i = 0; i < 11; i++){
         reminder[i] = dividend[i];
     }
-    printf("\n");
+    printf("\n reszta z dzielenia : \n");
     for(int i=0;i<dividendLength;i++) {
         printf("%d, ",reminder[i]);
     }
+    printf("\n wynik dzielenia : \n");
+
+    for(int i=0;i<11;i++) {
+        printf("%d, ",quotient[i]);
+    }
+    printf("\n");
 }
+
 
 int gf_multiply(int a, int b) {
     if(a == -1 || b == -1) {
