@@ -1,7 +1,8 @@
 #include <stdio.h>
 
-void scanTab(int tab[]);
+void scanTab(int tab[], int size);
 void codeTab(int tab[]);
+void decodeTab(int tab[]);
 void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divisorLength, int *reminder, int *quotient);
 int gf_multiply(int a, int b);
 int gf_divide(int a, int b);
@@ -9,38 +10,46 @@ int gf_add(int a, int b);
 int to_primitive_element(int *binary);
 void to_binary(int *binary, int alpha);
 
+int tabPolynomial[21] = {0,22,30,9,0,12,25,20,5,23,1,5,17,30,5,25,29,22,12,25,24};
+
 int main() {
     int tabEx[11];
-    scanTab(tabEx);
+    int decodingTab[31];
+    scanTab(tabEx, 11);
     codeTab(tabEx);
+    scanTab(decodingTab, 31);
+    decodeTab(decodingTab);
 }
 
-void scanTab(int *tab) {
+void scanTab(int *tab, int size) {
     char tab1[21];
-    int tab2[11];
-    scanf("%20s",tab1);
-    int i =0;
+    int tab2[size];
+    int i = 0;
+    /*scanf("%20s",tab1);
     while(tab1[i] != '\0') {
         tab2[i] = tab1[i] - '0';
         i++;
+    }*/
+    printf("Podaj wielomian:\n");
+    while(i < size){
+        printf("%d. ", i+1);
+        scanf("%d", &tab2[i]);
+        i++;
     }
-    if(i < 11) {
-        for(int j = 0; j <11-i; j++) {
-            tab[j] = -1;
-        }
-        for(int j = 0; j < i; j++) {
-            tab[11 - i + j] = tab2[j];
-        }
+    for(int j = 0; j <size-i; j++) {
+        tab[j] = -1;        
     }
-
-    // printf("%d \n",i);
-    // for(int j=11-i;j<11;j++) {
-    //     printf("%d",tab[j]);
-    // }
+    for(int j = 0; j < i; j++) {
+        tab[size - i + j] = tab2[j];
+    }
+    printf("\nWprowadzony wielomian: ");
+    //printf("%d \n",i);
+    for(int j=size-i;j<size;j++) {
+        printf("%d, ",tab[j]);
+    }
 }
 
 void codeTab(int tab[]) {
-    int tabPolynomial[21] = {0,22,30,9,0,12,25,20,5,23,1,5,17,30,5,25,29,22,12,25,24};
     int tabToCode[31];
     int reminder[31];
     int quotinet[31];
@@ -53,6 +62,30 @@ void codeTab(int tab[]) {
         }
     }
     dividePolynomials(tabToCode, 31, tabPolynomial, 21, reminder, quotinet);
+    for(int i = 0; i < 11; i++){
+        reminder[i] = tabToCode[i];
+    }
+    printf("\nZakodowana wiadomość: ");
+    for(int i=0;i<31;i++) {
+        printf("%d, ",reminder[i]);
+    }
+}
+
+void decodeTab(int tab[]){
+    int reminder[31];
+    int quotinet[31];
+    dividePolynomials(tab, 31, tabPolynomial, 21, reminder, quotinet);
+    printf("\nWiadomość do zdekodowania: ");
+    for(int i=0;i<31;i++) {
+        printf("%d, ",reminder[i]);
+    }
+    for(int i = 0; i < 31; i++){
+        tab[i] = gf_add(tab[i], reminder[i]);
+    }
+    printf("\nZdekodowana wiadomość: ");
+    for(int i=0;i<31;i++) {
+        printf("%d, ",tab[i]);
+    }
 }
 
 void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divisorLength, int *reminder, int *quotient) {
@@ -67,7 +100,6 @@ void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divi
             //printf("%d. ", i);
             int quotTemp = gf_divide(reminder[i], divisor[0]);
             quotient[i] = quotTemp;
-
             for(int j=0;j<divisorLength;j++) {
                 if(divisor[j] != -1) {
                     int product = gf_multiply(quotTemp, divisor[j]);
@@ -75,18 +107,18 @@ void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divi
                     reminder[i+j] = gf_add(reminder[i+j], product);
                     //printf("%d, ", reminder[i+j]);
                 }
-                printf("%d ",reminder[i+j]);
+                //printf("%d, ",reminder[i+j]);
             }
         }
         //printf("\n");
     }
-    for(int i = 0; i < 11; i++){
+    /*for(int i = 0; i < 11; i++){
         reminder[i] = dividend[i];
     }
     printf("\n");
     for(int i=0;i<dividendLength;i++) {
         printf("%d, ",reminder[i]);
-    }
+    }*/
 }
 
 int gf_multiply(int a, int b) {
@@ -115,11 +147,11 @@ int gf_add(int a, int b) {
 
 int gf_divide(int a, int b) {
     if(a == -1 ) {
-        printf("warn");
+        printf("\nwarn");
         return -1;
     }
     if(b == -1) {
-        printf("dzielenie przez 0");
+        printf("\ndzielenie przez 0");
         return -1;
     }
     //return (a - b + 32) % 32;
