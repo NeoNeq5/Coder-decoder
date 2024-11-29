@@ -75,7 +75,7 @@ void codeTab(int tab[]) {
 void decodeTab(int tab[]){
     int reminder[31];
     int quotinet[31];
-    int w;
+    int w = 0;
     int moveCounter;
     dividePolynomials(tab, 31, tabPolynomial, 21, reminder, quotinet);
     printf("\nSyndrom: ");
@@ -85,12 +85,16 @@ void decodeTab(int tab[]){
             w++;
         }
     }
-    while(w > t && moveCounter < 31){
+    while(w > t && moveCounter != 31){
         int helper = tab[30];
         for(int i = 30; i > 0; i--){
             tab[i] = tab[i-1];
         }
         tab[0] = helper;
+        printf("\nPrzesunięta wiadomość: ");
+        for(int i = 0; i < 31; i++){
+            printf("%d, ", tab[i]);
+        }
         dividePolynomials(tab, 31, tabPolynomial, 21, reminder, quotinet);
         w = 0;
         printf("\nSyndrom: ");
@@ -100,6 +104,7 @@ void decodeTab(int tab[]){
                 w++;
             }
         }
+        printf("\nWaga: %d", w);
         moveCounter++;
     }
     if(moveCounter == 31){
