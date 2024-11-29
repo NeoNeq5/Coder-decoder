@@ -11,6 +11,7 @@ int to_primitive_element(int *binary);
 void to_binary(int *binary, int alpha);
 
 int tabPolynomial[21] = {0,22,30,9,0,12,25,20,5,23,1,5,17,30,5,25,29,22,12,25,24};
+int const t = 10;
 
 int main() {
     int tabEx[11];
@@ -30,7 +31,7 @@ void scanTab(int *tab, int size) {
         tab2[i] = tab1[i] - '0';
         i++;
     }*/
-    printf("Podaj wielomian:\n");
+    printf("\nPodaj wielomian:\n");
     while(i < size){
         printf("%d. ", i+1);
         scanf("%d", &tab2[i]);
@@ -74,13 +75,47 @@ void codeTab(int tab[]) {
 void decodeTab(int tab[]){
     int reminder[31];
     int quotinet[31];
+    int w;
+    int moveCounter;
     dividePolynomials(tab, 31, tabPolynomial, 21, reminder, quotinet);
-    printf("\nWiadomość do zdekodowania: ");
+    printf("\nSyndrom: ");
     for(int i=0;i<31;i++) {
         printf("%d, ",reminder[i]);
+        if(reminder[i] != -1){
+            w++;
+        }
+    }
+    while(w > t){
+        int helper = tab[30];
+        for(int i = 30; i > 0; i--){
+            tab[i] = tab[i-1];
+        }
+        tab[0] = helper;
+        dividePolynomials(tab, 31, tabPolynomial, 21, reminder, quotinet);
+        w = 0;
+        printf("\nSyndrom: ");
+        for(int i=0;i<31;i++) {
+            printf("%d, ",reminder[i]);
+            if(reminder[i] != -1){
+                w++;
+            }
+        }
+        moveCounter++;
     }
     for(int i = 0; i < 31; i++){
         tab[i] = gf_add(tab[i], reminder[i]);
+    }
+    printf("\nZdekodowana przesunięta wiadomość: ");
+    for(int i=0;i<31;i++) {
+        printf("%d, ",tab[i]);
+    }
+    while(moveCounter > 0){
+        int helper = tab[0];
+        for(int i = 0; i < 30; i++){
+            tab[i] = tab[i+1];
+        }
+        tab[30] = helper;
+        moveCounter--;
     }
     printf("\nZdekodowana wiadomość: ");
     for(int i=0;i<31;i++) {
