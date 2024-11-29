@@ -16,8 +16,8 @@ int const t = 10;
 int main() {
     int tabEx[11];
     int decodingTab[31];
-    scanTab(tabEx, 11);
-    codeTab(tabEx);
+    //scanTab(tabEx, 11);
+    //codeTab(tabEx);
     scanTab(decodingTab, 31);
     decodeTab(decodingTab);
 }
@@ -85,7 +85,7 @@ void decodeTab(int tab[]){
             w++;
         }
     }
-    while(w > t){
+    while(w > t && moveCounter < 31){
         int helper = tab[30];
         for(int i = 30; i > 0; i--){
             tab[i] = tab[i-1];
@@ -102,24 +102,29 @@ void decodeTab(int tab[]){
         }
         moveCounter++;
     }
-    for(int i = 0; i < 31; i++){
-        tab[i] = gf_add(tab[i], reminder[i]);
+    if(moveCounter == 31){
+        printf("\nBłędy niekorygowalne");
     }
-    printf("\nZdekodowana przesunięta wiadomość: ");
-    for(int i=0;i<31;i++) {
-        printf("%d, ",tab[i]);
-    }
-    while(moveCounter > 0){
-        int helper = tab[0];
-        for(int i = 0; i < 30; i++){
-            tab[i] = tab[i+1];
+    else{
+        for(int i = 0; i < 31; i++){
+            tab[i] = gf_add(tab[i], reminder[i]);
         }
-        tab[30] = helper;
-        moveCounter--;
-    }
-    printf("\nZdekodowana wiadomość: ");
-    for(int i=0;i<31;i++) {
-        printf("%d, ",tab[i]);
+        printf("\nZdekodowana przesunięta wiadomość: ");
+        for(int i=0;i<31;i++) {
+            printf("%d, ",tab[i]);
+        }
+        while(moveCounter > 0){
+            int helper = tab[0];
+            for(int i = 0; i < 30; i++){
+                tab[i] = tab[i+1];
+            }
+            tab[30] = helper;
+            moveCounter--;
+        }
+        printf("\nZdekodowana wiadomość: ");
+        for(int i=0;i<31;i++) {
+            printf("%d, ",tab[i]);
+        }
     }
 }
 
