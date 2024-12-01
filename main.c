@@ -3,21 +3,24 @@
 void scanTab(int tab[], int size);
 void codeTab(int tab[]);
 void decodeTab(int tab[]);
-void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divisorLength, int *reminder, int *quotient);
+void dividePolynomials(int *dividend, int dividendLength, int *reminder, int *quotient);
 int gf_multiply(int a, int b);
 int gf_divide(int a, int b);
 int gf_add(int a, int b);
 int to_primitive_element(int *binary);
 void to_binary(int *binary, int alpha);
+void polynomialCalc();
 
-int tabPolynomial[21] = {0,22,30,9,0,12,25,20,5,23,1,5,17,30,5,25,29,22,12,25,24};
+int tabPolynomial[21] = {0, 22, 30, 5, 29, 10, 13, 11, 13, 29, 23, 19, 24, 12, 4, 22, 0, 28, 12, 25, 24};
+int polynomialLength = 21;
 int const t = 10;
 
 int main() {
     int tabEx[11];
     int decodingTab[31];
-    //scanTab(tabEx, 11);
-    //codeTab(tabEx);
+    //polynomialCalc();
+    scanTab(tabEx, 11);
+    codeTab(tabEx);
     scanTab(decodingTab, 31);
     decodeTab(decodingTab);
 }
@@ -62,7 +65,7 @@ void codeTab(int tab[]) {
             tabToCode[i] = -1;
         }
     }
-    dividePolynomials(tabToCode, 31, tabPolynomial, 21, reminder, quotinet);
+    dividePolynomials(tabToCode, 31, reminder, quotinet);
     for(int i = 0; i < 11; i++){
         reminder[i] = tabToCode[i];
     }
@@ -77,7 +80,7 @@ void decodeTab(int tab[]){
     int quotinet[31];
     int w = 0;
     int moveCounter;
-    dividePolynomials(tab, 31, tabPolynomial, 21, reminder, quotinet);
+    dividePolynomials(tab, 31, reminder, quotinet);
     printf("\nSyndrom: ");
     for(int i=0;i<31;i++) {
         printf("%d, ",reminder[i]);
@@ -95,7 +98,7 @@ void decodeTab(int tab[]){
         for(int i = 0; i < 31; i++){
             printf("%d, ", tab[i]);
         }
-        dividePolynomials(tab, 31, tabPolynomial, 21, reminder, quotinet);
+        dividePolynomials(tab, 31, reminder, quotinet);
         w = 0;
         printf("\nSyndrom: ");
         for(int i=0;i<31;i++) {
@@ -133,24 +136,25 @@ void decodeTab(int tab[]){
     }
 }
 
-void dividePolynomials(int *dividend, int dividendLength, int *divisor, int divisorLength, int *reminder, int *quotient) {
+void dividePolynomials(int *dividend, int dividendLength, int *reminder, int *quotient) {
     for(int i=0;i<dividendLength;i++) {
         reminder[i] = dividend[i];
     }
     for(int i=0;i<dividendLength;i++) {
         quotient[i] = -1;
     }
-    for(int i=0;i<=dividendLength - divisorLength;i++) {
+    for(int i=0;i<=dividendLength - polynomialLength;i++) {
         if(reminder[i] != -1) {
             //printf("%d. ", i);
-            int quotTemp = gf_divide(reminder[i], divisor[0]);
+            int quotTemp = gf_divide(reminder[i],tabPolynomial[0]);
             quotient[i] = quotTemp;
-            for(int j=0;j<divisorLength;j++) {
-                if(divisor[j] != -1) {
-                    int product = gf_multiply(quotTemp, divisor[j]);
+            printf("\n");
+            for(int j=0;j<polynomialLength;j++) {
+                if(tabPolynomial[j] != -1) {
+                    int product = gf_multiply(quotTemp,tabPolynomial[j]);
                     //printf("%d + %d = ", reminder[i+j], product);
                     reminder[i+j] = gf_add(reminder[i+j], product);
-                    //printf("%d, ", reminder[i+j]);
+                    printf("%d, ", reminder[i+j]);
                 }
                 //printf("%d, ",reminder[i+j]);
             }
@@ -298,5 +302,37 @@ void to_binary(int *binary, int alpha){
             }
             break;
         }
+    }
+}
+
+void polynomialCalc(){
+    int polynomial[21];
+    int nowSize = 2;
+    polynomial[0] = 1;
+    polynomial[1] = 0;
+    for(int i = 2; i < 21; i++){
+        polynomial[i] = -1;
+    }
+    for(int i = 2; i <= 20; i++){
+        int tempPolynomial[nowSize + 1];
+        int multiplier[2] = {nowSize, 0};
+        for(int j = 0; j < nowSize + 1; j++){
+            tempPolynomial[j] = -1;
+        }
+        for(int j = 0; j < nowSize; j++){
+            for(int k = 0; k < 2; k++){
+                int tempNumber = gf_multiply(polynomial[j], multiplier[k]);
+                printf("%d\n", tempNumber);
+                printf("%d + %d = %d\n", tempPolynomial[j+k], tempNumber, gf_add(tempPolynomial[j+k],tempNumber));
+                tempPolynomial[j+k] = gf_add(tempPolynomial[j+k],tempNumber);
+            }
+        }
+        nowSize++;
+        for(int j = 0; j < nowSize; j++){
+            polynomial[j] = tempPolynomial[j];
+        }
+    }
+    for(int i = nowSize-1; i >= 0; i--){
+        printf("%d, ", polynomial[i]);
     }
 }
