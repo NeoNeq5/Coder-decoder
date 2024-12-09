@@ -1,8 +1,12 @@
 #include <stdio.h>
 
+#include "file1.h"
+
+
 void scanTab(int tab[], int size);
 void codeTab(int tab[]);
-void decodeTab(int tab[]);
+
+int decodeTab(int tab[]);
 void dividePolynomials(int *dividend, int dividendLength, int *reminder, int *quotient);
 int gf_multiply(int a, int b);
 int gf_divide(int a, int b);
@@ -16,6 +20,7 @@ int polynomialLength = 21;
 int const t = 10;
 
 int main() {
+    main1();
     int tabEx[11];
     int decodingTab[31];
     //polynomialCalc();
@@ -69,21 +74,21 @@ void codeTab(int tab[]) {
     for(int i = 0; i < 11; i++){
         reminder[i] = tabToCode[i];
     }
-    printf("\nZakodowana wiadomość: ");
+    printf("\nZakodowana wiadomosc: ");
     for(int i=0;i<31;i++) {
         printf("%d, ",reminder[i]);
     }
 }
 
-void decodeTab(int tab[]){
+int decodeTab(int tab[]){
     int reminder[31];
     int quotinet[31];
     int w = 0;
-    int moveCounter;
+    int moveCounter = 0;
     dividePolynomials(tab, 31, reminder, quotinet);
-    printf("\nSyndrom: ");
+    //printf("\nSyndrom: ");
     for(int i=0;i<31;i++) {
-        printf("%d, ",reminder[i]);
+        //printf("%d, ",reminder[i]);
         if(reminder[i] != -1){
             w++;
         }
@@ -94,33 +99,34 @@ void decodeTab(int tab[]){
             tab[i] = tab[i-1];
         }
         tab[0] = helper;
-        printf("\nPrzesunięta wiadomość: ");
+        //printf("\nPrzesunięta wiadomosc: ");
         for(int i = 0; i < 31; i++){
-            printf("%d, ", tab[i]);
+            //printf("%d, ", tab[i]);
         }
         dividePolynomials(tab, 31, reminder, quotinet);
         w = 0;
-        printf("\nSyndrom: ");
+        //printf("\nSyndrom: ");
         for(int i=0;i<31;i++) {
-            printf("%d, ",reminder[i]);
+            //printf("%d, ",reminder[i]);
             if(reminder[i] != -1){
                 w++;
             }
         }
-        printf("\nWaga: %d", w);
+        //printf("\nWaga: %d", w);
         moveCounter++;
     }
     if(moveCounter == 31){
-        printf("\nBłędy niekorygowalne");
+        //printf("\nBledy niekorygowalne");
+        return 0;
     }
     else{
         for(int i = 0; i < 31; i++){
             tab[i] = gf_add(tab[i], reminder[i]);
         }
-        printf("\nZdekodowana przesunięta wiadomość: ");
-        for(int i=0;i<31;i++) {
-            printf("%d, ",tab[i]);
-        }
+        // printf("\nZdekodowana przesunięta wiadomosc: ");
+        // for(int i=0;i<31;i++) {
+        //     printf("%d, ",tab[i]);
+        // }
         while(moveCounter > 0){
             int helper = tab[0];
             for(int i = 0; i < 30; i++){
@@ -129,10 +135,11 @@ void decodeTab(int tab[]){
             tab[30] = helper;
             moveCounter--;
         }
-        printf("\nZdekodowana wiadomość: ");
-        for(int i=0;i<31;i++) {
-            printf("%d, ",tab[i]);
-        }
+        // printf("\nZdekodowana wiadomosc: ");
+        // for(int i=0;i<31;i++) {
+        //     printf("%d, ",tab[i]);
+        // }
+        return 1;
     }
 }
 
@@ -148,13 +155,13 @@ void dividePolynomials(int *dividend, int dividendLength, int *reminder, int *qu
             //printf("%d. ", i);
             int quotTemp = gf_divide(reminder[i],tabPolynomial[0]);
             quotient[i] = quotTemp;
-            printf("\n");
+            //printf("\n");
             for(int j=0;j<polynomialLength;j++) {
                 if(tabPolynomial[j] != -1) {
                     int product = gf_multiply(quotTemp,tabPolynomial[j]);
                     //printf("%d + %d = ", reminder[i+j], product);
                     reminder[i+j] = gf_add(reminder[i+j], product);
-                    printf("%d, ", reminder[i+j]);
+                    //printf("%d, ", reminder[i+j]);
                 }
                 //printf("%d, ",reminder[i+j]);
             }

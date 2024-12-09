@@ -4,4 +4,6 @@ project(Coder_decoder_niduc C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(Coder_decoder_niduc
-    main.c)
+    main.c
+        test.c
+        file1.h)
