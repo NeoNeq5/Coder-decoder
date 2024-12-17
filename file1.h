@@ -6,5 +6,7 @@ void codeTab(int tab[]);
 int decodeTab(int tab[]);
 void scanTab(int tab[], int size);
 void main1();
+void main2();
+void mainPol();
 
 #endif

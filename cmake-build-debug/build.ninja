@@ -61,6 +61,18 @@ build CMakeFiles/Coder_decoder_niduc.dir/test.c.obj: C_COMPILER__Coder_decoder_n
   OBJECT_DIR = CMakeFiles\Coder_decoder_niduc.dir
   OBJECT_FILE_DIR = CMakeFiles\Coder_decoder_niduc.dir
 
+build CMakeFiles/Coder_decoder_niduc.dir/test2.c.obj: C_COMPILER__Coder_decoder_niduc_unscanned_Debug D$:/Coder-decoder$ niduc/test2.c || cmake_object_order_depends_target_Coder_decoder_niduc
+  DEP_FILE = CMakeFiles\Coder_decoder_niduc.dir\test2.c.obj.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\Coder_decoder_niduc.dir
+  OBJECT_FILE_DIR = CMakeFiles\Coder_decoder_niduc.dir
+
+build CMakeFiles/Coder_decoder_niduc.dir/syndromeCalc.c.obj: C_COMPILER__Coder_decoder_niduc_unscanned_Debug D$:/Coder-decoder$ niduc/syndromeCalc.c || cmake_object_order_depends_target_Coder_decoder_niduc
+  DEP_FILE = CMakeFiles\Coder_decoder_niduc.dir\syndromeCalc.c.obj.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\Coder_decoder_niduc.dir
+  OBJECT_FILE_DIR = CMakeFiles\Coder_decoder_niduc.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Coder_decoder_niduc
@@ -69,7 +81,7 @@ build CMakeFiles/Coder_decoder_niduc.dir/test.c.obj: C_COMPILER__Coder_decoder_n
 #############################################
 # Link the executable Coder_decoder_niduc.exe
 
-build Coder_decoder_niduc.exe: C_EXECUTABLE_LINKER__Coder_decoder_niduc_Debug CMakeFiles/Coder_decoder_niduc.dir/main.c.obj CMakeFiles/Coder_decoder_niduc.dir/test.c.obj
+build Coder_decoder_niduc.exe: C_EXECUTABLE_LINKER__Coder_decoder_niduc_Debug CMakeFiles/Coder_decoder_niduc.dir/main.c.obj CMakeFiles/Coder_decoder_niduc.dir/test.c.obj CMakeFiles/Coder_decoder_niduc.dir/test2.c.obj CMakeFiles/Coder_decoder_niduc.dir/syndromeCalc.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Coder_decoder_niduc.dir

@@ -6,6 +6,7 @@
 void scanTab(int tab[], int size);
 void codeTab(int tab[]);
 
+void calculateSyndromes(int *syndromes, int *decodedPolymonial);
 int decodeTab(int tab[]);
 void dividePolynomials(int *dividend, int dividendLength, int *reminder, int *quotient);
 int gf_multiply(int a, int b);
@@ -14,20 +15,65 @@ int gf_add(int a, int b);
 int to_primitive_element(int *binary);
 void to_binary(int *binary, int alpha);
 void polynomialCalc();
+int gf_power(int a, int b);
 
 int tabPolynomial[21] = {0, 22, 30, 5, 29, 10, 13, 11, 13, 29, 23, 19, 24, 12, 4, 22, 0, 28, 12, 25, 24};
 int polynomialLength = 21;
 int const t = 10;
 
 int main() {
-    main1();
+    mainPol();
+    //main2();
     int tabEx[11];
     int decodingTab[31];
     //polynomialCalc();
     scanTab(tabEx, 11);
     codeTab(tabEx);
-    scanTab(decodingTab, 31);
-    decodeTab(decodingTab);
+    int mode;
+    scanf("jezeli chcesz dekoder uproszczony -1 jezeli chcesz dekoder rozszerzony -2 %d", mode);
+    if(mode == 1) {
+
+        scanTab(decodingTab, 31);
+        decodeTab(decodingTab);
+    }
+    else {
+        int syndromes[20];
+        int decodedPolymonial[31];
+        scanTab(decodedPolymonial, 31);
+        calculateSyndromes(syndromes, decodedPolymonial);
+    }
+
+}
+
+void calculateSyndromes(int *syndromes, int *decodedPolymonial){
+    for(int i = 1; i <= 20; i++){
+        int syndrome = -1;
+        for(int j = 1; j <= 31; j++){
+            int power = gf_power(i, 31-j);
+            printf("%d, ", power);
+            int multiplication = gf_multiply(decodedPolymonial[j-1], power);
+            printf("%d, ", multiplication);
+            syndrome = gf_add(syndrome, multiplication);
+            printf("%d -> ", syndrome);
+        }
+        printf("\nSyndrom: %d ", syndrome);
+        syndromes[i-1] = syndrome;
+        printf("%d\n", syndromes[i-1]);
+    }
+    for(int i = 0; i < 20; i++){
+        printf("%d, ", syndromes[i]);
+    }
+}
+
+int gf_power(int a, int b){
+    if(a == -1) {
+        printf("warn");
+        return -1;
+    }
+    if(b == 0){
+        return 0;
+    }
+    return (a * b) % 31;
 }
 
 void scanTab(int *tab, int size) {

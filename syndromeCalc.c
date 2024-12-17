@@ -1,31 +1,31 @@
 #include <stdio.h>
 
-void calculateSyndromes(int *syndromes, int *decodedPolymonial);
-int gf_power(int a, int b);
-void scanTab(int *tab, int size);
-int gf_multiply(int a, int b);
-int gf_divide(int a, int b);
-int gf_add(int a, int b);
-int to_primitive_element(int *binary);
-void to_binary(int *binary, int alpha);
+void calculateSyndromes1(int *syndromes, int *decodedPolymonial);
+int gf_power1(int a, int b);
+void scanTab1(int *tab, int size);
+int gf_multiply1(int a, int b);
+int gf_divide1(int a, int b);
+int gf_add1(int a, int b);
+int to_primitive_element1(int *binary);
+void to_binary1(int *binary, int alpha);
 
-int main(){
+void mainPol(){
     int syndromes[20];
     int decodedPolymonial[31];
-    scanTab(decodedPolymonial, 31);
-    calculateSyndromes(syndromes, decodedPolymonial);
+    scanTab1(decodedPolymonial, 31);
+    calculateSyndromes1(syndromes, decodedPolymonial);
 }
 
 //tu zaczyna się nowy kod
-void calculateSyndromes(int *syndromes, int *decodedPolymonial){
+void calculateSyndromes1(int *syndromes, int *decodedPolymonial){
     for(int i = 1; i <= 20; i++){
         int syndrome = -1;
         for(int j = 1; j <= 31; j++){
-            int power = gf_power(i, 31-j);
+            int power = gf_power1(i, 31-j);
             printf("%d, ", power);
-            int multiplication = gf_multiply(decodedPolymonial[j-1], power);
+            int multiplication = gf_multiply1(decodedPolymonial[j-1], power);
             printf("%d, ", multiplication);
-            syndrome = gf_add(syndrome, multiplication);
+            syndrome = gf_add1(syndrome, multiplication);
             printf("%d -> ", syndrome);
         }
         printf("\nSyndrom: %d ", syndrome);
@@ -37,7 +37,7 @@ void calculateSyndromes(int *syndromes, int *decodedPolymonial){
     }
 }
 
-int gf_power(int a, int b){
+int gf_power1(int a, int b){
     if(a == -1) {
         printf("warn");
         return -1;
@@ -49,7 +49,7 @@ int gf_power(int a, int b){
 }
 //tu kończy się nowy kod
 
-void scanTab(int *tab, int size) {
+void scanTab1(int *tab, int size) {
     char tab1[21];
     int tab2[size];
     int i = 0;
@@ -77,7 +77,7 @@ void scanTab(int *tab, int size) {
     }
 }
 
-int gf_multiply(int a, int b) {
+int gf_multiply1(int a, int b) {
     if(a == -1 || b == -1) {
         printf("warn");
         return -1;
@@ -86,22 +86,22 @@ int gf_multiply(int a, int b) {
     return (a + b) % 31;
 }
 
-int gf_add(int a, int b) {
+int gf_add1(int a, int b) {
     /*if(a == -1) return b;
     if(b == -1) return a;
     return a ^ b;*/
     int tabA[5];
-    to_binary(tabA, a);
+    to_binary1(tabA, a);
     int tabB[5];
-    to_binary(tabB, b);
+    to_binary1(tabB, b);
     int tabSum[5];
     for(int i = 0; i < 5; i++){
         tabSum[i] = tabA[i]^tabB[i];
     }
-    return to_primitive_element(tabSum);
+    return to_primitive_element1(tabSum);
 }
 
-int gf_divide(int a, int b) {
+int gf_divide1(int a, int b) {
     if(a == -1 ) {
         printf("\nwarn");
         return -1;
@@ -114,7 +114,7 @@ int gf_divide(int a, int b) {
     return (a - b + 31) % 31;
 }
 
-int to_primitive_element(int *binary){
+int to_primitive_element1(int *binary){
     int tabOfAlphas[32][6] = 
     {{0,0,0,0,0,-1},
     {0,0,0,0,1,0},
@@ -168,7 +168,7 @@ int to_primitive_element(int *binary){
     return tabOfAlphas[alpha][5];
 }
 
-void to_binary(int *binary, int alpha){
+void to_binary1(int *binary, int alpha){
     int tabOfAlphas[32][6] = 
     {{0,0,0,0,0,-1},
     {0,0,0,0,1,0},

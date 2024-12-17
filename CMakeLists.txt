@@ -6,4 +6,6 @@ set(CMAKE_C_STANDARD 11)
 add_executable(Coder_decoder_niduc
     main.c
         test.c
-        file1.h)
+        file1.h
+        test2.c
+        syndromeCalc.c)
