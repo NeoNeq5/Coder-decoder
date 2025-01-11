@@ -14,6 +14,7 @@ void mainPol(){
     int decodedPolymonial[31];
     scanTab1(decodedPolymonial, 31);
     calculateSyndromes1(syndromes, decodedPolymonial);
+
 }
 
 //tu zaczyna się nowy kod
