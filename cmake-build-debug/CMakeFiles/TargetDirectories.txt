@@ -1,3 +1,0 @@
-D:/Coder-decoder niduc/cmake-build-debug/CMakeFiles/Coder_decoder_niduc.dir
-D:/Coder-decoder niduc/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/Coder-decoder niduc/cmake-build-debug/CMakeFiles/rebuild_cache.dir
