@@ -27,7 +27,7 @@ int main() {
     //main2();
     int tabEx[11];
     int decodingTab[31];
-    //polynomialCalc();
+    // //polynomialCalc();
     scanTab(tabEx, 11);
     codeTab(tabEx);
     int mode;

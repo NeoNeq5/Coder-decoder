@@ -8,8 +8,39 @@ typedef struct {
     int degree;
 } Polynomial;
 
+// Funkcja obliczająca wartości błędów
+void calculateErrorValues(int *errorLocators, int errorCount, int *syndromes, int *errorValues) {
+    for (int i = 0; i < errorCount; i++) {
+        int Xi = gf_power(errorLocators[i], 1); // Xi = alfa^(-loc)
+        // Licznik wielomianu Omega(Xi)
+        int numerator = syndromes[0];
+        for (int j = 1; j < errorCount; j++) {
+            numerator = gf_add(numerator, gf_multiply(syndromes[j], gf_power(Xi, j)));
+        }
+        // Mianownik Omega'(Xi), czyli pochodna wielomianu lokalizatorów błędów
+        int denominator = 1;
+        for (int j = 0; j < errorCount; j++) {
+            if (j != i) {
+                denominator = gf_multiply(denominator, gf_add(1, gf_multiply(errorLocators[j], Xi)));
+            }
+        }
+        // Obliczenie wartości błędu przez dzielenie w ciele GF
+        errorValues[i] = gf_divide(numerator, denominator);
+    }
+}
+
+// Funkcja korygująca błędy w otrzymanym ciągu
+void correctErrors(int *receivedPolynomial, int *errorLocators, int *errorValues, int errorCount) {
+    for (int i = 0; i < errorCount; i++) {
+        // Pozycja błędu w ciągu (LSB ma indeks 30, dlatego 30 - lokalizator)
+        int position = 30 - errorLocators[i];
+        // Korekcja błędu przez dodanie (w ciele GF) wartości błędu
+        receivedPolynomial[position] = gf_add(receivedPolynomial[position], errorValues[i]);
+    }
+}
+
 void improvedDecoder() {
-    int s[31] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1};
+    int s[31] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     Polynomial cx = {{0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 0};
     Polynomial bx = {{0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 0};
     int l = 0;
@@ -53,6 +84,7 @@ void improvedDecoder() {
     printf("\nDlugosc rejestru: %d\n", l);
 
     int errorLocators[31];
+    int errorValues[31];
     int count = 0;
 
     for(int i = 0; i <= 30; i++){
@@ -72,9 +104,22 @@ void improvedDecoder() {
             count++;
         }
     }
+    printf("\nlokalizatory błędów: \n");
     for(int i = 0; i < count; i++){
         printf("%d, ", errorLocators[i]);
     }
 
+    calculateErrorValues(errorLocators,count, s, errorValues);
 
+    printf("\nWartości bledów:\n");
+    for(int i = 0; i < count; i++) {
+        printf("%d, ", errorValues[i]);
+    }
+
+    correctErrors(s, errorLocators, errorValues, count);
+
+    printf("\nskorygowany ciąg:\n");
+    for(int i = 0; i < 31; i++) {
+        printf("%d, ", s[i]);
+    }
 }
