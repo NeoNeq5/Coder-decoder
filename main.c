@@ -22,7 +22,8 @@ int polynomialLength = 21;
 int const t = 10;
 
 int main() {
-    mainPol();
+    improvedDecoder();
+    //mainPol();
     //main2();
     int tabEx[11];
     int decodingTab[31];

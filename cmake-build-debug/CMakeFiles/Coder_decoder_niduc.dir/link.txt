@@ -1,0 +1,3 @@
+"C:\Users\froma\AppData\Local\JetBrains\CLion 2024.3.1.1\bin\cmake\win\x64\bin\cmake.exe" -E rm -f CMakeFiles\Coder_decoder_niduc.dir/objects.a
+C:\Users\froma\AppData\Local\JETBRA~1\CLION2~1.1\bin\mingw\bin\ar.exe qc CMakeFiles\Coder_decoder_niduc.dir/objects.a @CMakeFiles\Coder_decoder_niduc.dir\objects1.rsp
+C:\Users\froma\AppData\Local\JETBRA~1\CLION2~1.1\bin\mingw\bin\gcc.exe -g -Wl,--whole-archive CMakeFiles\Coder_decoder_niduc.dir/objects.a -Wl,--no-whole-archive -o Coder_decoder_niduc.exe -Wl,--out-implib,libCoder_decoder_niduc.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Coder_decoder_niduc.dir\linkLibs.rsp
