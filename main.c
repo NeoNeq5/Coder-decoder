@@ -22,6 +22,9 @@ int polynomialLength = 21;
 int const t = 10;
 
 int main() {
+    //polynomialCalc();
+    //printf("%d",gf_add(4, gf_multiply(21,gf_power(1, 14))));
+    //printf(" %d",gf_multiply(27,5));
     improvedDecoder();
     //mainPol();
     //main2();
@@ -30,7 +33,7 @@ int main() {
     // //polynomialCalc();
     scanTab(tabEx, 11);
     codeTab(tabEx);
-    int mode;
+    int mode = 1;
     scanf("jezeli chcesz dekoder uproszczony -1 jezeli chcesz dekoder rozszerzony -2 %d", mode);
     if(mode == 1) {
 
@@ -182,10 +185,10 @@ int decodeTab(int tab[]){
             tab[30] = helper;
             moveCounter--;
         }
-        // printf("\nZdekodowana wiadomosc: ");
-        // for(int i=0;i<31;i++) {
-        //     printf("%d, ",tab[i]);
-        // }
+        printf("\nZdekodowana wiadomosc: ");
+        for(int i=0;i<31;i++) {
+        printf("%d, ",tab[i]);
+        }
         return 1;
     }
 }

@@ -3,6 +3,8 @@
 #include "file1.h"
 
 //1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1
+//-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 22, 30, 5, 29, 10, 13, 11, 13, 29, 23, 19, 24, 12, 4, 22, 0, 28, 12, 25, 24
+//-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
 typedef struct {
     int polynomial[31];
     int degree;
@@ -40,7 +42,8 @@ void correctErrors(int *receivedPolynomial, int *errorLocators, int *errorValues
 }
 
 void improvedDecoder() {
-    int s[31] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    //tu się zaczyna Berlekamp-Massey
+    int s[31] = {1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 22, 30, 5, 29, 10, 13, 11, 13, 29, 23, 19, 24, 12, 4, 22, 0, 28, 12, 25, 24};
     Polynomial cx = {{0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 0};
     Polynomial bx = {{0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 0};
     int l = 0;
@@ -48,19 +51,23 @@ void improvedDecoder() {
     int b = 0;
 
     for (int n = 0; n < 31; n++) {
+        //obliczam discrepancy
         int d = s[n];
         for (int i = 1; i <= l; i++) {
             d = gf_add(d, gf_multiply(cx.polynomial[i], s[n - i]));
         }
-
+        printf("\nd=%d\n", d);
+        //nie wykryto błędu
         if (d==-1) {
             m++;
+            continue;
         }
+        //wykryto błąd
         else if (2 * l <= n) {
             Polynomial tx = cx;
 
             for (int i = 0; i <= bx.degree; i++) {
-                cx.polynomial[i+m] = gf_add(cx.polynomial[i+m], gf_multiply(gf_divide(d, b), bx.polynomial[i]));
+                cx.polynomial[i+m] = gf_add(cx.polynomial[i+m], gf_multiply(d, bx.polynomial[i]));
             }
             cx.degree += m;
 
@@ -71,7 +78,7 @@ void improvedDecoder() {
         }
         else {
             for (int i = 0; i <= bx.degree; i++) {
-                cx.polynomial[i+m] = gf_add(cx.polynomial[i+m], gf_multiply(gf_divide(d, b), bx.polynomial[i]));
+                cx.polynomial[i+m] = gf_add(cx.polynomial[i+m], gf_multiply(d, bx.polynomial[i]));
             }
             m++;
         }
@@ -81,18 +88,19 @@ void improvedDecoder() {
     for (int i = 0; i <= l; i++) {
         printf("%d ", cx.polynomial[i]);
     }
-    printf("\nDlugosc rejestru: %d\n", l);
+    printf("\nStopien wielomianu: %d\n", l);
 
     int errorLocators[31];
     int errorValues[31];
     int count = 0;
 
+    //tu się zaczyna Chien
     for(int i = 0; i <= 30; i++){
         int errorLocator = -1;
-        for(int j = 1; j <= l+1; j++){
-            int power = gf_power(i, l+1-j);
+        for(int j = 0; j <= l; j++){
+            int power = gf_power(i, l-j);
             printf("%d, ", power);
-            int multiplication = gf_multiply(cx.polynomial[j-1], power);
+            int multiplication = gf_multiply(cx.polynomial[j], power);
             printf("%d, ", multiplication);
             errorLocator = gf_add(errorLocator, multiplication);
             printf("%d -> ", errorLocator);
