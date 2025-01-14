@@ -43,14 +43,16 @@ void correctErrors(int *receivedPolynomial, int *errorLocators, int *errorValues
 
 void improvedDecoder() {
     //tu się zaczyna Berlekamp-Massey
-    int s[31] = {1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 22, 30, 5, 29, 10, 13, 11, 13, 29, 23, 19, 24, 12, 4, 22, 0, 28, 12, 25, 24};
+    int decodedPolynomnial[31] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 22, 30, 5, 29, 10, 13, 11, 13, 29, 23, 19, 24, 12, 4, 22, 0, 28, 12, 25, 24};
+    int s[20];
+    calculateSyndromes1(s, decodedPolynomnial);
     Polynomial cx = {{0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 0};
     Polynomial bx = {{0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 0};
     int l = 0;
     int m = 1;
     int b = 0;
 
-    for (int n = 0; n < 31; n++) {
+    for (int n = 0; n < 20; n++) {
         //obliczam discrepancy
         int d = s[n];
         for (int i = 1; i <= l; i++) {
@@ -67,7 +69,7 @@ void improvedDecoder() {
             Polynomial tx = cx;
 
             for (int i = 0; i <= bx.degree; i++) {
-                cx.polynomial[i+m] = gf_add(cx.polynomial[i+m], gf_multiply(d, bx.polynomial[i]));
+                cx.polynomial[i+m] = gf_add(cx.polynomial[i+m], gf_multiply(gf_divide(d, b), bx.polynomial[i]));
             }
             cx.degree += m;
 
@@ -78,7 +80,7 @@ void improvedDecoder() {
         }
         else {
             for (int i = 0; i <= bx.degree; i++) {
-                cx.polynomial[i+m] = gf_add(cx.polynomial[i+m], gf_multiply(d, bx.polynomial[i]));
+                cx.polynomial[i+m] = gf_add(cx.polynomial[i+m], gf_multiply(gf_divide(d, b), bx.polynomial[i]));
             }
             m++;
         }

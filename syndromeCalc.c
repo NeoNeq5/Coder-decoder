@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-void calculateSyndromes1(int *syndromes, int *decodedPolymonial);
+void calculateSyndromes1(int *syndromes, int *decodedPolynomnial);
 int gf_power1(int a, int b);
 void scanTab1(int *tab, int size);
 int gf_multiply1(int a, int b);
@@ -18,13 +18,13 @@ void mainPol(){
 }
 
 //tu zaczyna się nowy kod
-void calculateSyndromes1(int *syndromes, int *decodedPolymonial){
+void calculateSyndromes1(int *syndromes, int *decodedPolynomnial){
     for(int i = 1; i <= 20; i++){
         int syndrome = -1;
         for(int j = 1; j <= 31; j++){
             int power = gf_power1(i, 31-j);
             printf("%d, ", power);
-            int multiplication = gf_multiply1(decodedPolymonial[j-1], power);
+            int multiplication = gf_multiply1(decodedPolynomnial[j-1], power);
             printf("%d, ", multiplication);
             syndrome = gf_add1(syndrome, multiplication);
             printf("%d -> ", syndrome);

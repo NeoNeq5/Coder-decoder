@@ -9,4 +9,5 @@ add_executable(Coder_decoder_niduc
         file1.h
         test2.c
         syndromeCalc.c
-        berlekampMasseyAlgorithm.c)
+        berlekampMasseyAlgorithm.c
+        test3.c)

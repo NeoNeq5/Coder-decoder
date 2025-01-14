@@ -9,6 +9,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/Coder_decoder_niduc.dir/test.c.obj.d"
   "CMakeFiles/Coder_decoder_niduc.dir/test2.c.obj"
   "CMakeFiles/Coder_decoder_niduc.dir/test2.c.obj.d"
+  "CMakeFiles/Coder_decoder_niduc.dir/test3.c.obj"
+  "CMakeFiles/Coder_decoder_niduc.dir/test3.c.obj.d"
   "Coder_decoder_niduc.exe"
   "Coder_decoder_niduc.exe.manifest"
   "Coder_decoder_niduc.pdb"

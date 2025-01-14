@@ -80,12 +80,12 @@ clean: CMakeFiles/Coder_decoder_niduc.dir/clean
 CMakeFiles/Coder_decoder_niduc.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Coder_decoder_niduc.dir\build.make CMakeFiles/Coder_decoder_niduc.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Coder_decoder_niduc.dir\build.make CMakeFiles/Coder_decoder_niduc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\froma\OneDrive\Documents\GitHub\Coder-decoder\cmake-build-debug\CMakeFiles --progress-num=1,2,3,4,5,6 "Built target Coder_decoder_niduc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\froma\OneDrive\Documents\GitHub\Coder-decoder\cmake-build-debug\CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target Coder_decoder_niduc"
 .PHONY : CMakeFiles/Coder_decoder_niduc.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/Coder_decoder_niduc.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\froma\OneDrive\Documents\GitHub\Coder-decoder\cmake-build-debug\CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\froma\OneDrive\Documents\GitHub\Coder-decoder\cmake-build-debug\CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/Coder_decoder_niduc.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\froma\OneDrive\Documents\GitHub\Coder-decoder\cmake-build-debug\CMakeFiles 0
 .PHONY : CMakeFiles/Coder_decoder_niduc.dir/rule

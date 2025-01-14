@@ -13,6 +13,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "C:/Users/froma/OneDrive/Documents/GitHub/Coder-decoder/syndromeCalc.c" "CMakeFiles/Coder_decoder_niduc.dir/syndromeCalc.c.obj" "gcc" "CMakeFiles/Coder_decoder_niduc.dir/syndromeCalc.c.obj.d"
   "C:/Users/froma/OneDrive/Documents/GitHub/Coder-decoder/test.c" "CMakeFiles/Coder_decoder_niduc.dir/test.c.obj" "gcc" "CMakeFiles/Coder_decoder_niduc.dir/test.c.obj.d"
   "C:/Users/froma/OneDrive/Documents/GitHub/Coder-decoder/test2.c" "CMakeFiles/Coder_decoder_niduc.dir/test2.c.obj" "gcc" "CMakeFiles/Coder_decoder_niduc.dir/test2.c.obj.d"
+  "C:/Users/froma/OneDrive/Documents/GitHub/Coder-decoder/test3.c" "CMakeFiles/Coder_decoder_niduc.dir/test3.c.obj" "gcc" "CMakeFiles/Coder_decoder_niduc.dir/test3.c.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
