@@ -108,6 +108,42 @@ void scanTab(int *tab, int size) {
     }
 }
 
+void scanTab2(int *tab, int size, const char *filename) {
+    int temp[size];
+    int count = 0;
+
+    // Otwórz plik do odczytu
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror("Nie można otworzyć pliku");
+        return;
+    }
+
+    // Wczytaj liczby z pliku
+    while (count < size && fscanf(file, "%d", &temp[count]) == 1) {
+        count++;
+    }
+
+    fclose(file);
+
+    // Jeśli mniej liczb niż wymagany rozmiar, uzupełnij 1
+    for (int i = count; i < size; i++) {
+        temp[i] = 1;
+    }
+
+    // Przekopiuj dane do wynikowej tablicy (uwzględniając ewentualne nadmiarowe dane)
+    for (int i = 0; i < size; i++) {
+        tab[i] = temp[i];
+    }
+
+    // Wyświetl wczytaną tablicę
+    printf("\nWczytany wielomian: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d, ", tab[i]);
+    }
+    printf("\n");
+}
+
 void codeTab(int tab[]) {
     int tabToCode[31];
     int reminder[31];
@@ -229,17 +265,12 @@ void dividePolynomials(int *dividend, int dividendLength, int *reminder, int *qu
 
 int gf_multiply(int a, int b) {
     if(a == -1 || b == -1) {
-        printf("warn");
         return -1;
     }
-    //return (a * b) % 32;
     return (a + b) % 31;
 }
 
 int gf_add(int a, int b) {
-    /*if(a == -1) return b;
-    if(b == -1) return a;
-    return a ^ b;*/
     int tabA[5];
     to_binary(tabA, a);
     int tabB[5];
@@ -253,7 +284,7 @@ int gf_add(int a, int b) {
 
 int gf_divide(int a, int b) {
     if(a == -1 ) {
-        printf("\nwarn");
+        printf("\nwarn dzielenie");
         return -1;
     }
     if(b == -1) {

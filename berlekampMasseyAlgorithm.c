@@ -1,135 +1,111 @@
 #include <stdio.h>
-
 #include "file1.h"
 
-//1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1
-//-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 22, 30, 5, 29, 10, 13, 11, 13, 29, 23, 19, 24, 12, 4, 22, 0, 28, 12, 25, 24
-//-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
+// Definicje funkcji GF (ciało Galois) - zakładamy, że są zaimplementowane w file1.h:
+// - gf_add(a, b): Dodawanie w GF(2^m).
+// - gf_multiply(a, b): Mnożenie w GF(2^m).
+// - gf_divide(a, b): Dzielenie w GF(2^m).
+// - gf_power(a, b): Potęgowanie w GF(2^m).
+
 typedef struct {
     int polynomial[31];
     int degree;
 } Polynomial;
 
-// Funkcja obliczająca wartości błędów
-void calculateErrorValues(int *errorLocators, int errorCount, int *syndromes, int *errorValues) {
-    for (int i = 0; i < errorCount; i++) {
-        int Xi = gf_power(errorLocators[i], 1); // Xi = alfa^(-loc)
-        // Licznik wielomianu Omega(Xi)
-        int numerator = syndromes[0];
-        for (int j = 1; j < errorCount; j++) {
-            numerator = gf_add(numerator, gf_multiply(syndromes[j], gf_power(Xi, j)));
-        }
-        // Mianownik Omega'(Xi), czyli pochodna wielomianu lokalizatorów błędów
-        int denominator = 1;
-        for (int j = 0; j < errorCount; j++) {
-            if (j != i) {
-                denominator = gf_multiply(denominator, gf_add(1, gf_multiply(errorLocators[j], Xi)));
-            }
-        }
-        // Obliczenie wartości błędu przez dzielenie w ciele GF
-        errorValues[i] = gf_divide(numerator, denominator);
-    }
-}
-
-// Funkcja korygująca błędy w otrzymanym ciągu
-void correctErrors(int *receivedPolynomial, int *errorLocators, int *errorValues, int errorCount) {
-    for (int i = 0; i < errorCount; i++) {
-        // Pozycja błędu w ciągu (LSB ma indeks 30, dlatego 30 - lokalizator)
-        int position = 30 - errorLocators[i];
-        // Korekcja błędu przez dodanie (w ciele GF) wartości błędu
-        receivedPolynomial[position] = gf_add(receivedPolynomial[position], errorValues[i]);
-    }
-}
 
 void improvedDecoder() {
-    //tu się zaczyna Berlekamp-Massey
-    int decodedPolynomnial[31] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 22, 30, 5, 29, 10, 13, 11, 13, 29, 23, 19, 24, 12, 4, 22, 0, 28, 12, 25, 24};
+    // Inicjalizacja danych wejściowych
+    int decodedPolynomial[31] = {1, 14, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     int s[20];
-    calculateSyndromes1(s, decodedPolynomnial);
+    calculateSyndromes1(s, decodedPolynomial);
+
     Polynomial cx = {{0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 0};
     Polynomial bx = {{0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 0};
-    int l = 0;
-    int m = 1;
-    int b = 0;
+    int l = 0, m = 1, b = 0;
 
+    // Algorytm Berlekampa-Masseya
     for (int n = 0; n < 20; n++) {
-        //obliczam discrepancy
         int d = s[n];
         for (int i = 1; i <= l; i++) {
             d = gf_add(d, gf_multiply(cx.polynomial[i], s[n - i]));
         }
-        printf("\nd=%d\n", d);
-        //nie wykryto błędu
-        if (d==-1) {
+        if (d == -1) { // Brak błędu
             m++;
             continue;
-        }
-        //wykryto błąd
-        else if (2 * l <= n) {
+        } else if (2 * l <= n) { // Wykrycie nowego błędu
             Polynomial tx = cx;
-
             for (int i = 0; i <= bx.degree; i++) {
-                cx.polynomial[i+m] = gf_add(cx.polynomial[i+m], gf_multiply(gf_divide(d, b), bx.polynomial[i]));
+                cx.polynomial[i + m] = gf_add(cx.polynomial[i + m], gf_multiply(gf_divide(d, b), bx.polynomial[i]));
             }
             cx.degree += m;
-
             l = n + 1 - l;
             bx = tx;
             b = d;
             m = 1;
-        }
-        else {
+        } else { // Aktualizacja wielomianu korekty
             for (int i = 0; i <= bx.degree; i++) {
-                cx.polynomial[i+m] = gf_add(cx.polynomial[i+m], gf_multiply(gf_divide(d, b), bx.polynomial[i]));
+                cx.polynomial[i + m] = gf_add(cx.polynomial[i + m], gf_multiply(gf_divide(d, b), bx.polynomial[i]));
             }
             m++;
         }
     }
 
-    printf("\nMinimalny wielomian: ");
-    for (int i = 0; i <= l; i++) {
-        printf("%d ", cx.polynomial[i]);
-    }
-    printf("\nStopien wielomianu: %d\n", l);
-
+    // Algorytm Chiena - lokalizacja błędów
     int errorLocators[31];
     int errorValues[31];
-    int count = 0;
+    int errorCount = 0;
 
-    //tu się zaczyna Chien
-    for(int i = 0; i <= 30; i++){
+    for (int i = 0; i < 31; i++) {
         int errorLocator = -1;
-        for(int j = 0; j <= l; j++){
-            int power = gf_power(i, l-j);
-            printf("%d, ", power);
-            int multiplication = gf_multiply(cx.polynomial[j], power);
-            printf("%d, ", multiplication);
-            errorLocator = gf_add(errorLocator, multiplication);
-            printf("%d -> ", errorLocator);
+        for (int j = 0; j <= l; j++) {
+            errorLocator = gf_add(errorLocator, gf_multiply(cx.polynomial[j], gf_power(i, l - j)));
         }
-        printf("\nResult: %d\n", errorLocator);
         if (errorLocator == -1) {
-            errorLocators[count] = i;
-            printf("%d\n", errorLocators[count]);
-            count++;
+            errorLocators[errorCount] = i;
+            errorCount++;
         }
     }
-    printf("\nlokalizatory błędów: \n");
-    for(int i = 0; i < count; i++){
-        printf("%d, ", errorLocators[i]);
+
+    printf("\nAktualny wielomian korekty: ");
+    for (int i = 0; i <= cx.degree; i++) {
+        printf("%d ", cx.polynomial[i]);
+    }
+    printf("\n%d\n",errorCount);
+
+
+    // Obliczanie wartości błędów
+    for (int i = 0; i < errorCount; i++) {
+        int Xi_inv = gf_power(errorLocators[i], 30); // Odwrócenie Xi w GF(2^m)
+        int numerator = 0, denominator = 0;
+
+        // Oblicz licznik: S(Xi^-1)
+        for (int j = 0; j < 20; j++) {
+            printf("%d  ", numerator);
+            numerator = gf_add(numerator, gf_multiply(s[j], gf_power(Xi_inv, j)));
+        }
+        printf("\n");
+        // Oblicz mianownik: Λ'(Xi^-1)
+        for (int j = 1; j <= cx.degree; j += 2) { // Tylko wyrazy o nieparzystym stopniu
+            printf("%d  ", denominator);
+            denominator = gf_add(denominator, gf_multiply(cx.polynomial[j], gf_power(Xi_inv, cx.degree - j)));
+        }
+        printf("\n l = %d cs.degree = %d\n", l, cx.degree);
+        errorValues[i] = gf_divide(numerator, denominator); // Wartość błędu
+
     }
 
-    calculateErrorValues(errorLocators,count, s, errorValues);
-
-    printf("\nWartości bledów:\n");
-    for(int i = 0; i < count; i++) {
-        printf("%d, ", errorValues[i]);
+    // Korekcja błędów
+    for (int i = 0; i < errorCount; i++) {
+        int position = 31 - 1 - errorLocators[i]; // Indeks w dekodowanym wielomianie
+        printf("errorValue = %d\n", errorValues[i]);
+        printf("place to add = %d\n", decodedPolynomial[position]);;
+        decodedPolynomial[position] = gf_add(decodedPolynomial[position], errorValues[i]);
     }
 
-    correctErrors(s, errorLocators, errorValues, count);
-
-    printf("\nskorygowany ciąg:\n");
-    for(int i = 0; i < 31; i++) {
-        printf("%d, ", s[i]);
+    // Wyświetlanie wyniku
+    printf("Korygowany wielomian: \n");
+    for (int i = 0; i < 31; i++) {
+        printf("%d ", decodedPolynomial[i]);
     }
+    printf("\n");
 }

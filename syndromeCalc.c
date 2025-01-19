@@ -23,18 +23,18 @@ void calculateSyndromes1(int *syndromes, int *decodedPolynomnial){
         int syndrome = -1;
         for(int j = 1; j <= 31; j++){
             int power = gf_power1(i, 31-j);
-            printf("%d, ", power);
+            //printf("%d, ", power);
             int multiplication = gf_multiply1(decodedPolynomnial[j-1], power);
-            printf("%d, ", multiplication);
+            //printf("%d, ", multiplication);
             syndrome = gf_add1(syndrome, multiplication);
-            printf("%d -> ", syndrome);
+            //printf("%d -> ", syndrome);
         }
-        printf("\nSyndrom: %d ", syndrome);
+        //printf("\nSyndrom: %d ", syndrome);
         syndromes[i-1] = syndrome;
-        printf("%d\n", syndromes[i-1]);
+        //printf("%d\n", syndromes[i-1]);
     }
     for(int i = 0; i < 20; i++){
-        printf("%d, ", syndromes[i]);
+        //printf("%d, ", syndromes[i]);
     }
 }
 
