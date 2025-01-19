@@ -50,24 +50,28 @@ void improvedDecoder() {
         }
     }
 
-    // Algorytm Chiena - lokalizacja błędów
+    printf("cx.degree = %d, a l = %d\n", cx.degree, l);
+
+    // Brute-Force do lokalizacji błędów
     int errorLocators[31];
     int errorValues[31];
     int errorCount = 0;
 
+    printf("\n");
     for (int i = 0; i < 31; i++) {
         int errorLocator = -1;
         for (int j = 0; j <= l; j++) {
             errorLocator = gf_add(errorLocator, gf_multiply(cx.polynomial[j], gf_power(i, l - j)));
         }
         if (errorLocator == -1) {
+            printf("%d, ", i);
             errorLocators[errorCount] = i;
             errorCount++;
         }
     }
 
     printf("\nAktualny wielomian korekty: ");
-    for (int i = 0; i <= cx.degree; i++) {
+    for (int i = 0; i <= l; i++) {
         printf("%d ", cx.polynomial[i]);
     }
     printf("\n%d\n",errorCount);
@@ -76,20 +80,20 @@ void improvedDecoder() {
     // Obliczanie wartości błędów
     for (int i = 0; i < errorCount; i++) {
         int Xi_inv = gf_power(errorLocators[i], 30); // Odwrócenie Xi w GF(2^m)
-        int numerator = 0, denominator = 0;
+        int numerator = -1, denominator = -1;
 
         // Oblicz licznik: S(Xi^-1)
         for (int j = 0; j < 20; j++) {
+            numerator = gf_add(numerator, gf_multiply(s[j], gf_power(Xi_inv, 19 - j)));
             printf("%d  ", numerator);
-            numerator = gf_add(numerator, gf_multiply(s[j], gf_power(Xi_inv, j)));
         }
         printf("\n");
         // Oblicz mianownik: Λ'(Xi^-1)
-        for (int j = 1; j <= cx.degree; j += 2) { // Tylko wyrazy o nieparzystym stopniu
+        for (int j = 1; j <= l; j += 2) { // Tylko wyrazy o nieparzystym stopniu
+            denominator = gf_add(denominator, gf_multiply(cx.polynomial[j], gf_power(Xi_inv, j - 1)));
             printf("%d  ", denominator);
-            denominator = gf_add(denominator, gf_multiply(cx.polynomial[j], gf_power(Xi_inv, cx.degree - j)));
         }
-        printf("\n l = %d cs.degree = %d\n", l, cx.degree);
+        printf("\n l = %d cs.degree = %d\n", l, cx.degree + 1);
         errorValues[i] = gf_divide(numerator, denominator); // Wartość błędu
 
     }

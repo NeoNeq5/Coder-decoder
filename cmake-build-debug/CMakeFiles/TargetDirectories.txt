@@ -1,0 +1,3 @@
+C:/Users/froma/OneDrive/Documents/GitHub/Coder-decoder/cmake-build-debug/CMakeFiles/Coder_decoder_niduc.dir
+C:/Users/froma/OneDrive/Documents/GitHub/Coder-decoder/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/froma/OneDrive/Documents/GitHub/Coder-decoder/cmake-build-debug/CMakeFiles/rebuild_cache.dir

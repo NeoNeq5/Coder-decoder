@@ -34,7 +34,7 @@ void calculateSyndromes1(int *syndromes, int *decodedPolynomnial){
         //printf("%d\n", syndromes[i-1]);
     }
     for(int i = 0; i < 20; i++){
-        //printf("%d, ", syndromes[i]);
+        printf("%d, ", syndromes[i]);
     }
 }
 

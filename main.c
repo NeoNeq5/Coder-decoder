@@ -24,7 +24,7 @@ int const t = 10;
 int main() {
     //polynomialCalc();
     //printf("%d",gf_add(4, gf_multiply(21,gf_power(1, 14))));
-    //printf(" %d",gf_multiply(27,5));
+    //printf(" %d",gf_add(14,1));
     improvedDecoder();
     //mainPol();
     //main2();
