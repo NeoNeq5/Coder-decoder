@@ -15,7 +15,7 @@ typedef struct {
 
 void improvedDecoder() {
     // Inicjalizacja danych wejściowych
-    int decodedPolynomial[31] = {1, 14, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    int decodedPolynomial[31] = {27, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 22, 30, 5, 12, 10, 13, 11, 13, 29, 23, 18, 24, 12, 4, 22, 0, 28, 12, 25, 24};
     int s[20];
     calculateSyndromes1(s, decodedPolynomial);
 
@@ -82,9 +82,19 @@ void improvedDecoder() {
         int Xi_inv = gf_power(errorLocators[i], 30); // Odwrócenie Xi w GF(2^m)
         int numerator = -1, denominator = -1;
 
-        // Oblicz licznik: S(Xi^-1)
+        int omega[20+l];
+        for (int j = 0; j < 20+l; j++) {
+            omega[j] = -1;
+        }
+        //Oblicz Omega(x) = S(x) * c(x)
+        for (int j = 0; j <= l; j++) {
+            for (int k = 0; k < 20; k++) {
+                omega[j+k] = gf_add(omega[j+k], gf_multiply(cx.polynomial[j], s[k]));
+            }
+        }
+        // Oblicz licznik: Omega(Xi^-1)
         for (int j = 0; j < 20; j++) {
-            numerator = gf_add(numerator, gf_multiply(s[j], gf_power(Xi_inv, 19 - j)));
+            numerator = gf_add(numerator, gf_multiply(omega[j], gf_power(Xi_inv, j)));
             printf("%d  ", numerator);
         }
         printf("\n");
