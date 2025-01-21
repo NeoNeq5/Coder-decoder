@@ -16,6 +16,7 @@ int to_primitive_element(int *binary);
 void to_binary(int *binary, int alpha);
 void polynomialCalc();
 int gf_power(int a, int b);
+void transformTo_gf(int *binaryInformation, int *gf_information);
 
 int tabPolynomial[21] = {0, 22, 30, 5, 29, 10, 13, 11, 13, 29, 23, 19, 24, 12, 4, 22, 0, 28, 12, 25, 24};
 int polynomialLength = 21;
@@ -25,10 +26,16 @@ int main() {
     //polynomialCalc();
     //printf("%d",gf_add(4, gf_multiply(21,gf_power(1, 14))));
     //printf(" %d",gf_add(14,1));
-    improvedDecoder();
+    //improvedDecoder();
     //mainPol();
     //main2();
+    int informationSize = 40;
+    int binaryInformation[55] = {0,1,0,0,0,1,1,0, 0,1,1,0,1,0,0,1, 0,1,1,0,1,1,0,0, 0,1,1,0,1,0,0,1, 0,1,1,1,0,0,0,0};
+    for (int i = informationSize; i < 55; i++) {
+        binaryInformation[i] = 0;
+    }
     int tabEx[11];
+    transformTo_gf(binaryInformation, tabEx);
     int decodingTab[31];
     // //polynomialCalc();
     scanTab(tabEx, 11);
@@ -422,5 +429,20 @@ void polynomialCalc(){
     }
     for(int i = nowSize-1; i >= 0; i--){
         printf("%d, ", polynomial[i]);
+    }
+}
+
+void transformTo_gf(int *binaryInformation, int *gf_information) {
+    int binaryChunk[5];
+    int count=0;
+    for(int i = 0; i < 55; i+=5) {
+        for(int j = 0; j < 5; j++) {
+            binaryChunk[j] = binaryInformation[i + j];
+        }
+        gf_information[count] = to_primitive_element(binaryChunk);
+        count++;
+    }
+    for(int i = 0; i < 11; i++) {
+        printf("%d, ", gf_information[i]);
     }
 }
